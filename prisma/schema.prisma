@@ -12,6 +12,7 @@ model User {
   id            String    @id
   name          String    @db.Text
   username      String    @unique
+  displayUsername  String  @unique
   email         String    @unique
   bio           String?   @db.Text
   emailVerified Boolean   @default(false)
