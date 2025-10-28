@@ -53,6 +53,7 @@ export default function LoginForm() {
       console.log(data);
       if (result.error) {
         setError(result.error?.message || "something went wrong");
+        console.log(result.error.message);
       } else {
         router.push("/");
       }
