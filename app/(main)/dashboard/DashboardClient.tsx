@@ -1,27 +1,65 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
-import { createLink, updateLink, deleteLink, updateUserBio, getUserBio } from "./action";
+import { useState, useTransition, useEffect, useRef, ChangeEvent } from "react";
+import {
+  createLink,
+  updateLink,
+  deleteLink,
+  updateUserBio,
+  getUserBio,
+} from "./action";
 import LogoutButton from "@/components/LogoutButton";
 import { useRouter } from "next/navigation";
+import Avatar from "@/components/ui/avatar";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function DashboardClient({ links, userId, userName, bio }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState<
     null | { mode: "add" } | { mode: "edit"; item: any } | { mode: "bio" }
   >(null);
 
   const [user, setUser] = useState<any>(null);
-  
+  async function fetchBio() {
+    const data = await getUserBio(userId);
+    setUser(data);
+  }
   // 🔄 ambil bio dari server
   useEffect(() => {
-    async function fetchBio() {
-      const data = await getUserBio(userId);
-      setUser(data);
-    }
     fetchBio();
-  }, [userId]);
+  }, []);
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    setUser((prev: any) => ({ ...prev, image: url }));
+
+    console.log("Selected file:", file.name);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+
+      setUser((prev: any) => ({ ...prev, image: data.url }));
+
+      console.log("Uploaded image URL:", data.url);
+    } catch (error) {}
+  };
 
   const handleSubmit = (formData: FormData) => {
     startTransition(async () => {
@@ -31,6 +69,7 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
         await updateLink(open.item.id, formData);
       } else if (open?.mode === "bio") {
         await updateUserBio(userId, formData);
+        fetchBio();
       }
       setOpen(null);
       router.refresh();
@@ -45,19 +84,53 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
     });
   };
 
-  
+  const handleShareLink = () => {
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+
+    const linksUrl = baseUrl + "/" + userName;
+    navigator.clipboard.writeText(linksUrl);
+    toast("Event has been created", {
+      description: "url has been copied to the clipboard",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <div className="max-w-6xl mx-auto py-12 px-6">
         {/* Header */}
+        <Toaster richColors position="top-center" />
+
         <div className="flex justify-between items-start mb-10">
           <div>
             <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">
-              Welcome,{" "}
-              <span className="text-indigo-600 font-semibold">{userName}</span>
-            </p>
+            <p className="text-gray-600">Welcome,</p>
+
+            <div className="flex flex-col gap-2 bg-gray-50 border rounded-lg mt-3 p-3 ">
+              <div className="flex gap-2">
+                {user?.image ? (
+                  <Avatar src={user.image} />
+                ) : (
+                  <Avatar src={"/images/blank-avatar.webp"} />
+                )}
+
+                <span className="text-indigo-600 font-semibold my-auto">
+                  {user?.name}
+                </span>
+              </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-2 text-sm text-indigo-600 hover:text-indigo-800"
+              >
+                Edit Profile
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
 
             {/* Bio Section */}
             <div className="mt-3 p-3 bg-gray-50 border rounded-lg">
@@ -66,9 +139,7 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
                 {user?.bio ? (
                   <span>{user.bio}</span>
                 ) : (
-                  <span className="text-gray-400 italic">
-                    Belum ada bio...
-                  </span>
+                  <span className="text-gray-400 italic">Belum ada bio...</span>
                 )}
               </p>
               <button
@@ -81,6 +152,12 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
           </div>
 
           <div className="flex gap-3 mt-2">
+            <button
+              onClick={handleShareLink}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Share my links
+            </button>
             <button
               onClick={() => setOpen({ mode: "add" })}
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
@@ -106,7 +183,10 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
             </thead>
             <tbody>
               {links.map((item: any, i: number) => (
-                <tr key={item.id} className="border-t hover:bg-gray-50 transition">
+                <tr
+                  key={item.id}
+                  className="border-t hover:bg-gray-50 transition"
+                >
                   <td className="p-4">{i + 1}</td>
                   <td className="p-4 font-medium">{item.title}</td>
                   <td className="p-4 text-blue-600">{item.url}</td>
