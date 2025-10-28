@@ -52,3 +52,30 @@ export async function deleteLink(id: string) {
 
   revalidatePath("/dashboard");
 }
+
+export async function updateUserBio(userId: string, formData: FormData) {
+  if (!userId) throw new Error("User ID tidak ditemukan.");
+
+  const bio = String(formData.get("bio") || "").trim();
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { bio },
+  });
+
+  revalidatePath("/dashboard");
+}
+
+export async function getUserBio(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      bio: true,
+      name: true,
+      email: true,
+      image: true,
+    },
+  });
+
+  return user;
+}
