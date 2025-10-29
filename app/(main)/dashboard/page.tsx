@@ -10,10 +10,12 @@ export default async function DashboardPage() {
   const links = await getLinks(session.user.id);
 
   return (
-    <DashboardClient
-      links={links}
-      userId={session.user.id}
-      userName={session.user.username}
-    />
+    <div>
+      <DashboardClient
+        links={links}
+        userId={session.user.id}
+        userName={session.user.username}
+      />
+    </div>
   );
 }

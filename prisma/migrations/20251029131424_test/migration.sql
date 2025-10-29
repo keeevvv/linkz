@@ -1,0 +1,18 @@
+-- CreateTable
+CREATE TABLE `Theme` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `backgroundCard` VARCHAR(191) NOT NULL,
+    `buttonColor` VARCHAR(191) NOT NULL,
+    `buttonFont` VARCHAR(191) NOT NULL,
+    `buttonFontSize` VARCHAR(191) NOT NULL,
+    `buttonFontColor` VARCHAR(191) NOT NULL,
+    `titleColor` VARCHAR(191) NOT NULL,
+    `bioColor` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `Theme_userId_key`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Theme` ADD CONSTRAINT `Theme_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

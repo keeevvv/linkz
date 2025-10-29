@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import Avatar from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import MainNavbar from "@/components/mainNavbar";
 
 export default function DashboardClient({ links, userId, userName, bio }: any) {
   const router = useRouter();
@@ -95,7 +96,8 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 pt-10">
+      <MainNavbar type="dashboard" />
       <div className="max-w-6xl mx-auto py-12 px-6">
         {/* Header */}
         <Toaster richColors position="top-center" />
@@ -164,7 +166,6 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
             >
               + Add New
             </button>
-            <LogoutButton />
           </div>
         </div>
 
