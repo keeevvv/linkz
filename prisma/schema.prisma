@@ -11,6 +11,8 @@ datasource db {
 model User {
   id            String    @id
   name          String    @db.Text
+  username      String    @unique
+  displayUsername  String  @unique
   email         String    @unique
   bio           String?   @db.Text
   emailVerified Boolean   @default(false)
@@ -21,8 +23,25 @@ model User {
   links         Link[]
   sessions      Session[]
 
+  theme    Theme?  // opsional, user bisa belum punya theme
+
   @@map("user")
 }
+
+model Theme {
+  id             Int    @id @default(autoincrement())
+  backgroundCard String
+  buttonColor    String
+  buttonFont     String
+  buttonFontSize String
+  buttonFontColor String
+  titleColor     String
+  bioColor       String
+
+  userId         String    @unique
+  user           User   @relation(fields: [userId], references: [id])
+}
+
 
 model Session {
   id        String   @id
