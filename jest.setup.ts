@@ -1,5 +1,15 @@
 import "whatwg-fetch";
 import "@testing-library/jest-dom";
+import { TextEncoder, TextDecoder as NodeTextDecoder } from "util";
+
+if (typeof global.TextEncoder === "undefined") {
+  global.TextEncoder = TextEncoder as unknown as typeof global.TextEncoder;
+}
+
+if (typeof global.TextDecoder === "undefined") {
+  global.TextDecoder = NodeTextDecoder as unknown as typeof global.TextDecoder;
+}
+
 
 jest.mock("next/navigation", () => ({
   // Kita membuat implementasi palsu (mock) untuk useRouter
