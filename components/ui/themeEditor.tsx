@@ -225,8 +225,11 @@ export default function ThemeEditor({ user }: { user: UserWithThemeAndLinks }) {
           />
 
           {/* Title color */}
-          <label className="font-medium">Title Color</label>
+          <label htmlFor="titleColor" className="font-medium">
+            Title Color
+          </label>
           <input
+            id="titleColor"
             type="color"
             className="w-12 h-8 p-0 border-none"
             value={titleColor}
