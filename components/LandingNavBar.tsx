@@ -45,6 +45,14 @@ const NavBar = () => {
               <li>
                 <a
                   className="text-black transition hover:text-gray-500/75"
+                  href="#guide"
+                >
+                  Guide
+                </a>
+              </li>
+              <li>
+                <a
+                  className="text-black transition hover:text-gray-500/75"
                   href="#developer"
                 >
                   CoffeJava

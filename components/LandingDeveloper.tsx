@@ -65,7 +65,9 @@ const profileCards = cardData.map((profile) => ({
 
 const LandingDeveloper = () => {
   return (
-    <div id="developer" className="h-screen py-20 relative">
+    <div id="developer" className="min-h-screen py-20 relative">
+      {/* Perbaikan mengganti h-screen menjadi min-h-screen  */}
+
       <div id="about" className="flex flex-col items-center justify-center p-8">
         <ScrollFloat
           animationDuration={1}
