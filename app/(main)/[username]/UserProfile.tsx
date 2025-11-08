@@ -50,8 +50,8 @@ type UserWithLinks = {
 
   export default function UserProfile({ user }: { user: UserWithLinks }) {
 
-    const isGradient = user.theme?.backgroundCard.includes("gradient");
-  const isGradientButton = user.theme?.buttonColor.includes("gradient");
+  const isGradient = user.theme?.backgroundCard.includes("gradient") ?? false;
+  const isGradientButton = user.theme?.buttonColor.includes("gradient") ?? false;
 
   return (
     // PERUBAHAN: Latar belakang gradien yang lebih menarik
@@ -69,6 +69,7 @@ type UserWithLinks = {
             width={96}
             height={96}
             className="rounded-full w-24 h-24 object-cover"
+            priority={true}
           />
         )}
 
@@ -175,9 +176,13 @@ type UserWithLinks = {
                 </p>
               )}
 
-              {/* Replace the .map() content */}
               {user.links.map((link) => (
-                <LinkCard key={link.id} link={link} />
+                <LinkCard 
+                  key={link.id} 
+                  link={link} 
+                  theme={user.theme} 
+                  isGradientButton={isGradientButton} 
+                />
               ))}
               
             </div>
