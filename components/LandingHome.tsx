@@ -1,4 +1,4 @@
-import Iridescence from "./Iridescence";
+import dynamic from "next/dynamic";
 import RotatingText from "./RotatingText";
 
 const taglines = [
@@ -8,6 +8,12 @@ const taglines = [
   "All Your Links, Unified.",
   "Simplify Your Sharing.",
 ];
+
+const Iridescence = dynamic(() => import("./Iridescence"), {
+  ssr: false,
+
+  loading: () => <div className="absolute inset-0 bg-gray-200" />,
+});
 
 const LandingHome = () => {
   return (
