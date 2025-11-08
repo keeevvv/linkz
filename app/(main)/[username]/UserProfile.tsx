@@ -1,5 +1,6 @@
 "use client";
 
+
 import {
   Card,
   CardContent,
@@ -10,27 +11,50 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link"; // PERUBAHAN: Impor Link dari Next.js untuk footer
 // PERUBAHAN: Impor komponen Avatar lengkap
-import { User, Link as LinkIcon } from "lucide-react"; // PERUBAHAN: Impor LinkIcon untuk footer
+import { Link as LinkIcon } from "lucide-react"; // PERUBAHAN: Impor LinkIcon untuk footer
 import Avatar from "@/components/ui/avatar";
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import Image from 'next/image';
+import LinkCard from "./LinkCard"; 
 
+type Link = {
+  id: string;
+  title: string;
+  url: string | null;
+  description: string | null; 
+  imageUrl: string | null;    
+  embedType: string | null;
+};
+
+type Theme = {
+  backgroundCard: string;
+  buttonColor: string;
+  buttonFont: string;
+  buttonFontSize: string;
+  buttonFontColor: string;
+  titleColor: string;
+  bioColor: string;
+};
+
+// This is the main type to fix
 type UserWithLinks = {
   image: string | null;
   name: string | null;
   username: string;
   bio: string | null;
-  links: {
-    id: string;
-    title: string;
-    url: string | null;
-  }[];
-  // theme: any; // Kept this commented in case you re-add it
+  links: Link[];
+  githubUrl: string | null;
+  instagramUrl: string | null;
+  linkedInUrl: string | null;
+  theme: Theme | null; 
 };
 
-// const isGradient = user.theme?.backgroundCard.includes("gradient");
-  // const isGradientButton = user.theme?.buttonColor.includes("gradient");
+
 
   export default function UserProfile({ user }: { user: UserWithLinks }) {
+
+    const isGradient = user.theme?.backgroundCard.includes("gradient");
+  const isGradientButton = user.theme?.buttonColor.includes("gradient");
 
   return (
     // PERUBAHAN: Latar belakang gradien yang lebih menarik
@@ -54,7 +78,7 @@ type UserWithLinks = {
         
         <h1
           className="text-2xl font-bold text-center"
-          // style={{ color: user.theme?.titleColor || "#111" }}
+          style={{ color: user.theme?.titleColor || "#111" }}
         >
           {user.name || user.username}
         </h1>
@@ -62,7 +86,7 @@ type UserWithLinks = {
         
         <p
           className="text-center"
-          // style={{ color: user.theme?.bioColor || "#77767B" }}
+          style={{ color: user.theme?.bioColor || "#77767B" }}
         >
           @{user.username}
         </p>
@@ -71,32 +95,69 @@ type UserWithLinks = {
         {user.bio && (
           <p
             className="text-center"
-            // style={{ color: user.theme?.bioColor || "#77767B" }}
+            style={{ color: user.theme?.bioColor || "#77767B" }}
           >
             {user.bio}
           </p>
         )}
 
+        <div className="flex flex-row gap-2">
+          
+          {/* Instagram */}
+          {user.instagramUrl && (
+            <Link
+              href={user.instagramUrl}
+              target="_blank"
+              // These classes make it black, round, and centered
+              className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
+            >
+              <FaInstagram className="h-5 w-5" />
+            </Link>
+          )}
+
+          {/* GitHub */}
+          {user.githubUrl && (
+            <Link
+              href={user.githubUrl}
+              target="_blank"
+              className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
+            >
+              <FaGithub className="h-5 w-5" />
+            </Link>
+          )}
+
+          {/* LinkedIn */}
+          {user.linkedInUrl && (
+            <Link
+              href={user.linkedInUrl}
+              target="_blank"
+              className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
+            >
+              <FaLinkedin className="h-5 w-5" />
+            </Link>
+          )}
+
+        </div>
         
         <Card
           className="w-full shadow-lg transition-all hover:shadow-xl dark:bg-gray-900/75 dark:backdrop-blur-sm"
-          // style={
-          //   isGradient
-          //     ? {
-          //         backgroundImage:
-          //           user.theme?.backgroundCard || "rgba(255,255,255,1)",
-          //       }
-          //     : {
-          //         backgroundColor:
-          //           user.theme?.backgroundCard || "rgba(255,255,255,1)",
-          //       }
-          // }
+          style={
+            isGradient
+              ? {
+                  backgroundImage:
+                    user.theme?.backgroundCard || "rgba(255,255,255,1)",
+                }
+              : {
+                  backgroundColor:
+                    user.theme?.backgroundCard || "rgba(255,255,255,1)",
+                }
+          }
         >
           
           <CardHeader>
             <CardTitle 
               className="text-center text-lg"
-              // style={{ color: user.theme?.titleColor || "#111" }}
+              style={{ color: user.theme?.titleColor || "#111" }}
             >
               My Links
             </CardTitle>
@@ -105,29 +166,20 @@ type UserWithLinks = {
           {/* KEPT: New CardContent + button theming
           */}
           <CardContent>
+            {/* We pass the whole 'link' object to our new component */}
             <div className="flex flex-col gap-4">
-              {user.links.map((link: any) => (
-                <Button
-                  key={link.id}
-                  size="lg"
-                  className={`w-full h-14 transition-transform duration-150 ease-in-out hover:scale-[1.03] hover:shadow-md text-lg`
-                }
-                  asChild
-                  // style={{
-                  //   backgroundColor: isGradientButton
-                  //     ? undefined
-                  //     : user.theme?.buttonColor || "rgba(0, 0, 0, 1)",
-                  //   backgroundImage: isGradientButton
-                  //     ? user.theme?.buttonColor || "rgba(0, 0, 0, 1)"
-                  //     : undefined,
-                  //   color: user.theme?.buttonFontColor || "#ffffffff",
-                  // }}
-                >
-                  <a href={link.url} target="_blank" rel="noopener noreferrer">
-                    {link.title}
-                  </a>
-                </Button>
+              
+              {user.links.length === 0 && (
+                <p className="text-center text-sm text-muted-foreground">
+                  This user hasn't added any links yet.
+                </p>
+              )}
+
+              {/* Replace the .map() content */}
+              {user.links.map((link) => (
+                <LinkCard key={link.id} link={link} />
               ))}
+              
             </div>
           </CardContent>
         </Card>

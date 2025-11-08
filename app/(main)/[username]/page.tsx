@@ -18,7 +18,7 @@ export default async function UserLinkPage(props: {
     },
     include: {
       links: true,
-      // theme: true,
+      theme: true,
     },
   });
 
