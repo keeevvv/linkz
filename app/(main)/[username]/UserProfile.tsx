@@ -11,15 +11,15 @@ import Link from "next/link"; // PERUBAHAN: Impor Link dari Next.js untuk footer
 import { Link as LinkIcon } from "lucide-react"; // PERUBAHAN: Impor LinkIcon untuk footer
 import Avatar from "@/components/ui/avatar";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa6";
-import Image from 'next/image';
-import LinkCard from "./LinkCard"; 
+import Image from "next/image";
+import LinkCard from "./LinkCard";
 
 type Link = {
   id: string;
   title: string;
   url: string | null;
-  description: string | null; 
-  imageUrl: string | null;    
+  description: string | null;
+  imageUrl: string | null;
   embedType: string | null;
 };
 
@@ -43,15 +43,13 @@ type UserWithLinks = {
   githubUrl: string | null;
   instagramUrl: string | null;
   linkedInUrl: string | null;
-  theme: Theme | null; 
+  theme: Theme | null;
 };
 
-
-
-  export default function UserProfile({ user }: { user: UserWithLinks }) {
-
+export default function UserProfile({ user }: { user: UserWithLinks }) {
   const isGradient = user.theme?.backgroundCard.includes("gradient") ?? false;
-  const isGradientButton = user.theme?.buttonColor.includes("gradient") ?? false;
+  const isGradientButton =
+    user.theme?.buttonColor.includes("gradient") ?? false;
 
   return (
     // PERUBAHAN: Latar belakang gradien yang lebih menarik
@@ -61,8 +59,7 @@ type UserWithLinks = {
                    dark:from-gray-900 dark:via-gray-800 dark:to-blue-950"
     >
       <div className="w-full max-w-md mx-auto flex flex-col items-center gap-4">
-
-                {user.image && (
+        {user.image && (
           <Image
             src={user.image}
             alt={user.name || user.username}
@@ -73,7 +70,6 @@ type UserWithLinks = {
           />
         )}
 
-        
         <h1
           className="text-2xl font-bold text-center"
           style={{ color: user.theme?.titleColor || "#111" }}
@@ -81,7 +77,6 @@ type UserWithLinks = {
           {user.name || user.username}
         </h1>
 
-        
         <p
           className="text-center"
           style={{ color: user.theme?.bioColor || "#77767B" }}
@@ -89,7 +84,6 @@ type UserWithLinks = {
           @{user.username}
         </p>
 
-        
         {user.bio && (
           <p
             className="text-center"
@@ -100,7 +94,6 @@ type UserWithLinks = {
         )}
 
         <div className="flex flex-row gap-2">
-          
           {/* Instagram */}
           {user.instagramUrl && (
             <Link
@@ -137,9 +130,8 @@ type UserWithLinks = {
               <FaLinkedin className="h-5 w-5" />
             </Link>
           )}
-
         </div>
-        
+
         <Card
           className="w-full shadow-lg transition-all hover:shadow-xl dark:bg-gray-900/75 dark:backdrop-blur-sm"
           style={
@@ -154,9 +146,8 @@ type UserWithLinks = {
                 }
           }
         >
-          
           <CardHeader>
-            <CardTitle 
+            <CardTitle
               className="text-center text-lg"
               style={{ color: user.theme?.titleColor || "#111" }}
             >
@@ -165,11 +156,10 @@ type UserWithLinks = {
           </CardHeader>
 
           {/* KEPT: New CardContent + button theming
-          */}
+           */}
           <CardContent>
             {/* We pass the whole 'link' object to our new component */}
             <div className="flex flex-col gap-4">
-              
               {user.links.length === 0 && (
                 <p className="text-center text-sm text-muted-foreground">
                   This user hasn't added any links yet.
@@ -177,20 +167,19 @@ type UserWithLinks = {
               )}
 
               {user.links.map((link) => (
-                <LinkCard 
-                  key={link.id} 
-                  link={link} 
-                  theme={user.theme} 
-                  isGradientButton={isGradientButton} 
+                <LinkCard
+                  key={link.id}
+                  link={link}
+                  theme={user.theme}
+                  isGradientButton={isGradientButton}
                 />
               ))}
-              
             </div>
           </CardContent>
         </Card>
 
         {/* KEPT: New footer
-        */}
+         */}
         <footer className="mt-8 text-center text-sm text-muted-foreground">
           <Button variant="ghost" asChild>
             <Link href="/">
@@ -202,5 +191,4 @@ type UserWithLinks = {
       </div>
     </main>
   );
-
-  }
+}
