@@ -46,7 +46,7 @@ describe("Landing Page (Home)", () => {
     (useSession as unknown as jest.Mock).mockClear();
   });
 
-  it("should render landing page when user is not authenticated", () => {
+  it("should render landing page when user is not authenticated", async () => {
     (useSession as unknown as jest.Mock).mockReturnValue({
       data: null,
       status: "unauthenticated",
@@ -54,7 +54,8 @@ describe("Landing Page (Home)", () => {
 
     render(<Home />);
 
-    expect(screen.getByText("Guide")).toBeInTheDocument();
+    expect(await screen.findByText("Guide")).toBeInTheDocument();
+
     expect(redirect).not.toHaveBeenCalled();
   });
 

@@ -36,9 +36,8 @@ export default async (): Promise<Config> => {
 
   // 2. Timpa 'transformIgnorePatterns' secara manual
   nextJestConfig.transformIgnorePatterns = [
-    "/node_modules/(?!.*(nanostores|better-auth))",
+    "/node_modules/(?!(ogl|gsap|nanostores|better-auth)/)",
     "^.+\\.module\\.(css|sass|scss)$",
-    "/node_modules/(?!(ogl)/)",
   ];
 
   // 3. Kembalikan konfigurasi yang sudah dimodifikasi
