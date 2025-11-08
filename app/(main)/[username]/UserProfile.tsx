@@ -108,6 +108,7 @@ type UserWithLinks = {
             <Link
               href={user.instagramUrl}
               target="_blank"
+              aria-label="Instagram Profile"
               // These classes make it black, round, and centered
               className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
             >
@@ -120,6 +121,7 @@ type UserWithLinks = {
             <Link
               href={user.githubUrl}
               target="_blank"
+              aria-label="GitHub Profile"
               className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
             >
               <FaGithub className="h-5 w-5" />
@@ -131,6 +133,7 @@ type UserWithLinks = {
             <Link
               href={user.linkedInUrl}
               target="_blank"
+              aria-label="LinkedIn Profile"
               className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
             >
               <FaLinkedin className="h-5 w-5" />

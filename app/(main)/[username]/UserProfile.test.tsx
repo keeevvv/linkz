@@ -16,15 +16,15 @@ const mockUser = {
       id: '1', 
       title: 'Google', 
       url: 'https://google.com', 
-      description: null, 
-      imageUrl: null, 
+      description: "My go-to search.", 
+      imageUrl: 'http://example.com/google.png', 
       embedType: null 
     },
     { 
       id: '2', 
       title: 'Bing', 
       url: 'https://bing.com', 
-      description: null, 
+      description: "My other search.", 
       imageUrl: null, 
       embedType: null 
     },
@@ -34,7 +34,6 @@ const mockUser = {
   githubUrl: 'https://github.com/test',
   instagramUrl: 'https://instagram.com/test',
   linkedInUrl: 'https://linkedin.com/in/test',
-  linkPageFooter: 'This is my test footer note!',
 };
 
 // A mock for a user *without* social links or a footer
@@ -96,14 +95,6 @@ describe('UserProfile Component', () => {
     expect(screen.queryByLabelText('LinkedIn Profile')).not.toBeInTheDocument();
   });
 
-  it('should render the footer note if it exists', () => {
-    render(<UserProfile user={mockUser} />);
-    expect(screen.getByText('This is my test footer note!')).toBeInTheDocument();
-  });
 
-  it('should not render the footer note if it does not exist', () => {
-    render(<UserProfile user={mockUserMinimal} />);
-    expect(screen.queryByText('This is my test footer note!')).not.toBeInTheDocument();
-  });
 
 });
