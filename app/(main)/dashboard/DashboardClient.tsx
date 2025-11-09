@@ -16,6 +16,14 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import MainNavbar from "@/components/mainNavbar";
 
+
+export function filterVisibleLinks(links: any[], visibleOnly: boolean) {
+  if (visibleOnly) {
+    return links.filter((link) => link.visible === true);
+  }
+  return links;
+}
+
 export default function DashboardClient({ links, userId, userName, bio }: any) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -42,6 +50,11 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
   useEffect(() => {
     fetchBio();
   }, []);
+
+
+  const [showVisibleOnly, setShowVisibleOnly] = useState(false);
+
+  const filteredLinks = filterVisibleLinks(links, showVisibleOnly);
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -262,6 +275,15 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
 
         {/* Table */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="flex justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-800">Your Links</h2>
+            <button
+              onClick={() => setShowVisibleOnly(!showVisibleOnly)}
+              className="px-3 py-1 text-sm bg-indigo-500 text-white rounded hover:bg-indigo-600"
+            >
+              {showVisibleOnly ? "Show All" : "Show Visible Only"}
+            </button>
+          </div>
           <table className="w-full text-left border-collapse">
             <thead className="bg-gray-100 text-gray-700">
               <tr>
@@ -275,7 +297,7 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
               </tr>
             </thead>
             <tbody>
-              {links.map((item: any, i: number) => (
+              {filteredLinks.map((item: any, i: number) => (
                 <tr
                   key={item.id}
                   className="border-t hover:bg-gray-50 transition"
@@ -315,7 +337,7 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
                   </td>
                 </tr>
               ))}
-              {links.length === 0 && (
+              {filteredLinks.length === 0 && (
                 <tr>
                   <td colSpan={7} className="p-6 text-center text-gray-500">
                     No data available.
