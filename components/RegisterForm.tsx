@@ -18,9 +18,9 @@ import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 import { signUp, signIn } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import prisma from "@/lib/prisma";
 
 // 🔹 Skema validasi Zod
 const registerSchema = z
@@ -44,16 +44,6 @@ const registerSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
-
-async function checkUsername(username: string) {
-  const res = await fetch("/api/check-username", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username }),
-  });
-  const data = await res.json();
-  return data.exists;
-}
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
@@ -94,7 +84,7 @@ export default function RegisterForm() {
           router.push("/login");
         }, 1500);
       }
-    } catch (e) {
+    } catch {
       setError("Something went wrong");
     } finally {
       setLoading(false);
@@ -106,7 +96,7 @@ export default function RegisterForm() {
       await signIn.social({
         provider: "google",
       });
-    } catch (error) {
+    } catch {
       setError("Cannot sign up with Google account");
     }
   };
@@ -156,7 +146,7 @@ export default function RegisterForm() {
               )}
             </div>
 
-            {/* Email */}
+            {/* Username */}
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -168,7 +158,7 @@ export default function RegisterForm() {
                   errors.username && "border-red-500 focus-visible:ring-red-500"
                 )}
               />
-              {errors.email && (
+              {errors.username && (
                 <p className="text-red-500 text-sm">
                   {errors.username?.message}
                 </p>
@@ -221,7 +211,7 @@ export default function RegisterForm() {
                 {...register("confirmPassword")}
                 className={cn(
                   errors.confirmPassword &&
-                    "border-red-500 focus-visible:ring-red-500"
+                  "border-red-500 focus-visible:ring-red-500"
                 )}
               />
               {errors.confirmPassword && (
@@ -238,7 +228,7 @@ export default function RegisterForm() {
 
           <div className="relative my-6">
             <Separator />
-            <span className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 bg-white px-2 text-sm text-gray-500">
+            <span className="absolute -top-2.5 left-1/2 transform -translate-x-1/2 bg-white px-2 text-sm text-gray-500">
               or
             </span>
           </div>
@@ -255,9 +245,9 @@ export default function RegisterForm() {
 
         <CardFooter className="text-center text-sm text-gray-500">
           Already have an account?
-          <a href="/login" className="text-blue-600 hover:underline ml-1">
+          <Link href="/login" className="text-blue-600 hover:underline ml-1">
             Login
-          </a>
+          </Link>
         </CardFooter>
       </Card>
     </div>

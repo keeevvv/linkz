@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 // CREATE
 export async function createLink(data: FormData, userId: string) {
   if (!userId) throw new Error("User ID tidak ditemukan.");
+  const imageUrl = String(data.get("imageUrl") || "");
 
   await prisma.link.create({
     data: {
@@ -14,6 +15,7 @@ export async function createLink(data: FormData, userId: string) {
       position: Number(data.get("position")) || 0,
       visible: data.get("visible") === "true",
       userId, 
+      imageUrl: imageUrl.length > 0 ? imageUrl : null,
     },
   });
 
@@ -30,6 +32,7 @@ export async function getLinks(userId: string) {
 
 // UPDATE
 export async function updateLink(id: string, data: FormData) {
+  const imageUrl = String(data.get("imageUrl") || "");
   await prisma.link.update({
     where: { id },
     data: {
@@ -38,6 +41,7 @@ export async function updateLink(id: string, data: FormData) {
       description: String(data.get("description") || ""),
       position: Number(data.get("position")) || 0,
       visible: data.get("visible") === "true",
+      imageUrl: imageUrl.length > 0 ? imageUrl : null,
     },
   });
 
@@ -66,6 +70,22 @@ export async function updateUserBio(userId: string, formData: FormData) {
   revalidatePath("/dashboard");
 }
 
+
+export async function updateUserSocials(userId: string, formData: FormData) {
+  if (!userId) throw new Error("User ID tidak ditemukan.");
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      githubUrl: String(formData.get("githubUrl") || ""),
+      instagramUrl: String(formData.get("instagramUrl") || ""),
+      linkedInUrl: String(formData.get("linkedInUrl") || ""),
+    },
+  });
+
+  revalidatePath("/dashboard");
+}
+
 export async function getUserBio(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -74,6 +94,9 @@ export async function getUserBio(userId: string) {
       name: true,
       email: true,
       image: true,
+      githubUrl: true, 
+      instagramUrl: true, 
+      linkedInUrl: true, 
     },
   });
 

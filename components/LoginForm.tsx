@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { signIn, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // 🔹 Skema validasi Zod
 const loginSchema = z.object({
@@ -129,6 +130,12 @@ export default function LoginForm() {
                 </p>
               )}
             </div>
+
+            <Link href={"/forgot-password"}>
+              <p className="text-start text-sm text-blue-600 hover:underline ">
+                Forgor Your Password ?
+              </p>
+            </Link>
 
             <Button type="submit" className="w-full mt-2" disabled={loading}>
               {loading ? "Logging in..." : "Login"}

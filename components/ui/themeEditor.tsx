@@ -4,6 +4,8 @@ import ColorPicker from "react-best-gradient-color-picker";
 import { useState } from "react";
 import Avatar from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
 import {
   Card,
   CardContent,
@@ -14,6 +16,11 @@ import {
 import { Prisma, User } from "@/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import MainNavbar from "../mainNavbar";
+import LinkCard from "@/app/(main)/[username]/LinkCard";
+import Link from "next/link"; // PERUBAHAN: Impor Link dari Next.js untuk footer
+// PERUBAHAN: Impor komponen Avatar lengkap
+import { Link as LinkIcon } from "lucide-react"; // PERUBAHAN: Impor LinkIcon untuk footer
+import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 type UserWithThemeAndLinks = Prisma.UserGetPayload<{
   include: {
@@ -77,61 +84,143 @@ export default function ThemeEditor({ user }: { user: UserWithThemeAndLinks }) {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Preview */}
         <div className="w-full md:w-[60%]">
-          <Card
-            className="min-h-[80vh] w-full shadow-lg transition-all hover:shadow-xl dark:bg-gray-900/75 dark:backdrop-blur-sm"
-            style={
-              isGradient
-                ? { backgroundImage: cardColor }
-                : { backgroundColor: cardColor }
-            }
+          <main
+            className="min-h-screen p-4 pt-12 md:pt-24 
+                   bg-gradient-to-br from-gray-100 via-gray-50 to-blue-100
+                   dark:from-gray-900 dark:via-gray-800 dark:to-blue-950"
           >
-            <CardHeader className="flex flex-col items-center text-center gap-4">
-              {user?.image ? (
-                <Avatar size={120} src={user.image} />
-              ) : (
-                <Avatar size={120} src={"/images/blank-avatar.webp"} />
+            <div className="w-full max-w-md mx-auto flex flex-col items-center gap-4">
+              {user.image && (
+                <Image
+                  src={user.image}
+                  alt={user.name || user.username}
+                  width={96}
+                  height={96}
+                  className="rounded-full w-24 h-24 object-cover"
+                  priority={true}
+                />
               )}
-              <div className="space-y-1">
-                <CardTitle className={`text-2xl`} style={{ color: titleColor }}>
-                  {user.name || user.username}
-                </CardTitle>
-                <CardDescription style={{ color: bioColor }}>
-                  @{user.username}
-                </CardDescription>
-                <CardDescription
-                  style={{ color: bioColor }}
-                  className="pt-2 text-base"
+
+              <h1
+                className="text-2xl font-bold text-center"
+                style={{ color: user.theme?.titleColor || "#111" }}
+              >
+                {user.name || user.username}
+              </h1>
+
+              <p
+                className="text-center"
+                style={{ color: user.theme?.bioColor || "#77767B" }}
+              >
+                @{user.username}
+              </p>
+
+              {user.bio && (
+                <p
+                  className="text-center"
+                  style={{ color: user.theme?.bioColor || "#77767B" }}
                 >
-                  {user.bio || "Welcome to my page!"}
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                {user.links.map((link: any) => (
-                  <Button
-                    key={link.id}
-                    size="lg"
-                    className={`w-full h-14 transition-transform duration-150 ease-in-out hover:scale-[1.03] hover:shadow-md  ${btnFont} ${btnFontSize}`}
-                    asChild
-                    style={{
-                      backgroundColor: isGradientButton ? undefined : btnColor,
-                      backgroundImage: isGradientButton ? btnColor : undefined,
-                      color: buttonFontColor, // ← ini untuk font color
-                    }}
+                  {user.bio}
+                </p>
+              )}
+
+              <div className="flex flex-row gap-2">
+                {/* Instagram */}
+                {user.instagramUrl && (
+                  <Link
+                    href={user.instagramUrl}
+                    target="_blank"
+                    aria-label="Instagram Profile"
+                    // These classes make it black, round, and centered
+                    className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
                   >
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {link.title}
-                    </a>
-                  </Button>
-                ))}
+                    <FaInstagram className="h-5 w-5" />
+                  </Link>
+                )}
+
+                {/* GitHub */}
+                {user.githubUrl && (
+                  <Link
+                    href={user.githubUrl}
+                    target="_blank"
+                    aria-label="GitHub Profile"
+                    className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
+                  >
+                    <FaGithub className="h-5 w-5" />
+                  </Link>
+                )}
+
+                {/* LinkedIn */}
+                {user.linkedInUrl && (
+                  <Link
+                    href={user.linkedInUrl}
+                    target="_blank"
+                    aria-label="LinkedIn Profile"
+                    className="h-10 w-10 p-0 rounded-full bg-black text-white flex items-center justify-center transition-opacity hover:opacity-80"
+                  >
+                    <FaLinkedin className="h-5 w-5" />
+                  </Link>
+                )}
               </div>
-            </CardContent>
-          </Card>
+
+              <Card
+                className="w-full shadow-lg transition-all hover:shadow-xl dark:bg-gray-900/75 dark:backdrop-blur-sm"
+                style={
+                  isGradient
+                    ? {
+                        backgroundImage:
+                          user.theme?.backgroundCard || "rgba(255,255,255,1)",
+                      }
+                    : {
+                        backgroundColor:
+                          user.theme?.backgroundCard || "rgba(255,255,255,1)",
+                      }
+                }
+              >
+                <CardHeader>
+                  <CardTitle
+                    className="text-center text-lg"
+                    style={{ color: user.theme?.titleColor || "#111" }}
+                  >
+                    My Links
+                  </CardTitle>
+                </CardHeader>
+
+                {/* KEPT: New CardContent + button theming
+                 */}
+                <CardContent>
+                  {/* We pass the whole 'link' object to our new component */}
+                  <div className="flex flex-col gap-4">
+                    {user.links.length === 0 && (
+                      <p className="text-center text-sm text-muted-foreground">
+                        This user hasn't added any links yet.
+                      </p>
+                    )}
+
+                    {user.links.map((link) => (
+                      <LinkCard
+                        key={link.id}
+                        link={link}
+                        theme={user.theme}
+                        isGradientButton={isGradientButton}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* KEPT: New footer
+               */}
+              <footer className="mt-8 text-center text-sm text-muted-foreground">
+                <Button variant="ghost" asChild>
+                  <Link href="/">
+                    <LinkIcon className="w-4 h-4 mr-2" />
+                    Create your own Linkz
+                  </Link>
+                </Button>
+              </footer>
+            </div>
+          </main>
         </div>
 
         {/* Editor */}
@@ -225,8 +314,11 @@ export default function ThemeEditor({ user }: { user: UserWithThemeAndLinks }) {
           />
 
           {/* Title color */}
-          <label className="font-medium">Title Color</label>
+          <label htmlFor="titleColor" className="font-medium">
+            Title Color
+          </label>
           <input
+            id="titleColor"
             type="color"
             className="w-12 h-8 p-0 border-none"
             value={titleColor}
