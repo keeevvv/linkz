@@ -274,7 +274,7 @@ export default function DashboardClient({ links, userId, userName, bio }: any) {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg overflow-x-auto">
           <div className="flex justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Your Links</h2>
             <button
