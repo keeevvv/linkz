@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: nextjs-app
+  ports:
+    - protocol: TCP
+      port: 80 # Port untuk akses dari browser
+      targetPort: 3000 # Port internal aplikasi (Next.js default 3000)
+  type: NodePort # Agar bisa diakses dari IP Minikube
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextjs-app
+  template:
+    metadata:
+      labels:
+        app: nextjs-app
+    spec:
+      containers:
+        - name: nextjs-app
+          # WAJIB: Ganti dengan nama image yang sudah dipush Anggota 1 ke Docker Hub
+          image: keeevvv/linkz-app:1.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          envFrom:
+            # Mengambil semua key-value dari ConfigMap
+            - configMapRef:
+                name: linkz-config
+            # Mengambil semua key-value dari Secret
+            - secretRef:
+                name: linkz-secret 

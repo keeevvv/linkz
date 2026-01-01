@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None # Headless service agar komunikasi antar pod stabil
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate # Database sebaiknya Recreate agar tidak ada dua pod nulis ke disk yang sama
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: DATABASE_NAME
+          ports:
+            - containerPort: 3306
+          # Bagian ini untuk menyimpan data ke disk
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc

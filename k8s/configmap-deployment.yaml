@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: linkz-config
+data:
+  BETTER_AUTH_URL: "http://192.168.49.2:31854" # Ganti dengan URL kamu
+  NODE_ENV: "production"
