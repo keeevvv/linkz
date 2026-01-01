@@ -1,5 +1,5 @@
 
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 
 FROM base AS deps
@@ -28,10 +28,12 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
 
 
-RUN npx prisma generate
+RUN npx prisma@6.19.1 generate
 
 
 RUN npm run build
+
+RUN npm install @react-email/render @react-email/components
 
 
 FROM base AS runner
