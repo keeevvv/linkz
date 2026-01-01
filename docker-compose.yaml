@@ -1,0 +1,59 @@
+services:
+  app:
+    container_name: linkz_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+     
+      NODE_ENV: production
+      
+     
+      DATABASE_URL: "mysql://laraveluser:passwordku@db:3306/linkz"
+      
+
+      BETTER_AUTH_SECRET: "9636c1b12aaf401a04dad4ea87d1fc2b6c4b57939ecf6af610957c0935f7b565"
+      BETTER_AUTH_URL: "http://localhost:3000" 
+      
+      
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      RESEND_API_KEY: "${RESEND_API_KEY}"
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - linkz_network
+
+  db:
+    container_name: linkz_db
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: linkz
+      MYSQL_USER: laraveluser
+      MYSQL_PASSWORD: passwordku
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - linkz_network
+    healthcheck:
+      # PERBAIKAN: Menambahkan user root dan password untuk ping
+      # Tanda $$ digunakan untuk escape variable di dalam docker-compose
+      test: "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s 
+
+networks:
+  linkz_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
