@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 /generated/prisma
+
+
+# secret k8s files
+k8s/secret-deployment.yaml
+k8s/mysql-secret-deployment.yaml

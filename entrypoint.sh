@@ -1,9 +1,9 @@
 #!/bin/sh
-set -e
 
+# Menunggu database siap (opsional tapi disarankan)
+echo "Running database migrations..."
+npx prisma@6.19.1 migrate deploy
 
-
-echo "🗄️ Syncing database..."
-npx prisma@6.19.1 db push
-
+# Menjalankan perintah utama (CMD dari Dockerfile yaitu 'node server.js')
+echo "Starting application..."
 exec "$@"

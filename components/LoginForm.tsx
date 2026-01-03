@@ -45,6 +45,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
+    console.log(process.env.BETTER_AUTH_URL);
     try {
       const result = await signIn.email({
         email: data.email,
@@ -64,6 +65,7 @@ export default function LoginForm() {
   };
 
   const handleGoogleLogin = async () => {
+    console.log(process.env.BETTER_AUTH_URL);
     try {
       const data = signIn.social({
         provider: "google",

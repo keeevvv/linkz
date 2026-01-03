@@ -11,6 +11,7 @@ export default async function LoginPage() {
   }
   return (
     <div className="w-full w-full">
+      <h1>test versi 1.0.1</h1>
       <LoginForm />
     </div>
   );
